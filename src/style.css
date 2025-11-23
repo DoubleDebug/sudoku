@@ -1,0 +1,52 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: var(--cell-color);
+
+  --cell-color: #242424;
+  --cell-size: 40px;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+}
+
+.grid,
+.block {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(3, auto);
+}
+
+.grid {
+  width: min-content;
+  gap: 7px;
+  background: grey;
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  background: var(--cell-color);
+  border: 1px solid grey;
+  width: var(--cell-size);
+  height: var(--cell-size);
+
+  &:not(.opened) {
+    cursor: pointer;
+    &:hover {
+      border-color: silver;
+    }
+  }
+}
+
+.title {
+  font-size: 5rem;
+}

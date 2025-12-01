@@ -44,6 +44,58 @@ export class SudokuGame {
     return cells;
   }
 
+  private getBlockIndex(rowIndex: number, colIndex: number) {
+    const blockRow = Math.floor(rowIndex / 3);
+    const blockCol = Math.floor(colIndex / 3);
+    return blockRow * 3 + blockCol;
+  }
+
+  private *findCellWithLeastPossibleNumbers(): Generator<CellInfo> {
+    const sortedCells = [];
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        const cell = this.state[row][col];
+        if (typeof cell.number === "number") continue;
+
+        const emptyRowCells = this.getRowCells(row).filter(
+          (cell) => cell.number === null
+        );
+        const emptyColCells = this.getColumnCells(row).filter(
+          (cell) => cell.number === null
+        );
+        const emptyBlockCells = this.getBlockCells(
+          this.getBlockIndex(row, col)
+        ).filter((cell) => cell.number === null);
+
+        const uniqueEmptyCells = [
+          ...emptyRowCells,
+          ...emptyColCells,
+          ...emptyBlockCells,
+        ].reduce((uniqueCells, cell) => {
+          if (
+            uniqueCells.find(
+              (cell) =>
+                cell.position.r === cell.position.r &&
+                cell.position.c === cell.position.c
+            )
+          )
+            return uniqueCells;
+          return [...uniqueCells, cell];
+        }, [] as CellInfo[]);
+
+        sortedCells.push({ ...cell, possibleNumbers: uniqueEmptyCells.length });
+      }
+    }
+
+    sortedCells.sort(
+      (cell1, cell2) => cell1.possibleNumbers - cell2.possibleNumbers
+    );
+
+    for (let i = 0; i < sortedCells.length; i++) {
+      yield sortedCells[i];
+    }
+  }
+
   /**
    * @returns An error message if the state is invalid, or `null` if it is.
    */
@@ -107,6 +159,12 @@ export class SudokuGame {
   }
 
   solveNextStep() {
-    // TODO: Implement this function
+    const generator = this.findCellWithLeastPossibleNumbers();
+    let cell;
+
+    do {
+      cell = generator.next();
+      console.log(`dule1 - next cell`, cell.value);
+    } while (!cell.done);
   }
 }

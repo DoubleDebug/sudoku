@@ -22,3 +22,5 @@ const valid = game1.isStateValid();
 const gameContainer = document.getElementById("app")!;
 const ui = new SudokuUi();
 ui.drawGrid(gameContainer, game1);
+
+game1.solveNextStep();
